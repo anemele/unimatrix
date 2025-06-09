@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crossterm::style::Color;
 
-const CHAR_SET: [(char, &str); 17] = [
+const CHAR_SET: [(char, &str); 15] = [
     ('a', "qwertyuiopasdfghjklzxcvbnm"),
     ('A', "QWERTYUIOPASDFGHJKLZXCVBNM"),
     ('c', "абвгдежзиклмнопрстуфхцчшщъыьэюя"),
@@ -23,8 +23,6 @@ const CHAR_SET: [(char, &str); 17] = [
         'o',
         r#"qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM123456789`-=~!@#$%^&*()_+[]{}|\\;\':",./<>?""#,
     ),
-    ('p', ""),
-    ('P', ""),
     ('r', "mcclllxxxxvvvvviiiiii"),
     ('R', "MCCLLLXXXXVVVVVIIIIII"),
     ('s', r#"-=*_+|:<>""#),

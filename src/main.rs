@@ -1,25 +1,9 @@
 mod cli;
+mod col;
 mod consts;
-
-use std::io::stdout;
-
-use clap::Parser;
-use crossterm::{
-    execute,
-    style::{Color, Print, ResetColor, SetBackgroundColor, SetForegroundColor},
-};
+mod r;
+mod st;
 
 fn main() -> anyhow::Result<()> {
-    execute!(
-        stdout(),
-        SetForegroundColor(Color::Red),
-        SetBackgroundColor(Color::Green),
-        Print("Hello World!"),
-        ResetColor,
-    )?;
-
-    let cli = cli::Cli::parse();
-    dbg!(&cli);
-
-    Ok(())
+    r::run()
 }
