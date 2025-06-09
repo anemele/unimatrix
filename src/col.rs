@@ -16,7 +16,7 @@ struct Column {
 impl Column {
     fn new(x: u16, max_y: u16) -> Self {
         let mut rng = rand::rng();
-        let length = rng.random_range(5..max_y);
+        let length = rng.random_range(3..max_y);
 
         Self {
             x,
@@ -68,8 +68,8 @@ impl Column {
             Print(random_character())
         )?;
 
-        let mut rng = rand::rng();
-        // 绘制整个列
+        let step = 16;
+        let mut m: u8 = 255 - step;
         for i in 1..self.length {
             if self.y <= i {
                 break;
@@ -79,13 +79,12 @@ impl Column {
                 execute!(
                     stdout,
                     MoveTo(self.x, y),
-                    SetForegroundColor(Color::Rgb {
-                        r: 0,
-                        g: rng.random_range(50..=255),
-                        b: 0
-                    }),
+                    SetForegroundColor(Color::Rgb { r: 0, g: m, b: 0 }),
                     Print(random_character())
                 )?;
+                if m >= step {
+                    m -= step;
+                }
             }
         }
 
@@ -107,11 +106,11 @@ impl Columns {
         Self { columns, height }
     }
 
-    pub fn frame(&mut self, stdout: &mut impl std::io::Write, y_step: u16) -> anyhow::Result<()> {
+    pub fn frame(&mut self, stdout: &mut impl std::io::Write, speed: u16) -> anyhow::Result<()> {
         // 更新和绘制所有列
         for column in &mut self.columns {
-            column.clear_tail(stdout, y_step)?;
-            column.update(self.height, y_step);
+            column.clear_tail(stdout, speed)?;
+            column.update(self.height, speed);
             column.draw(stdout)?;
         }
 

@@ -27,11 +27,11 @@ pub fn run() -> anyhow::Result<()> {
     // 创建列
     let mut columns = Columns::new(width, height);
 
-    let mut status = Status { y_step: 2 };
+    let mut status = Status { speed: 2 };
 
     // 主循环
     loop {
-        columns.frame(&mut stdout, status.y_step)?;
+        columns.frame(&mut stdout, status.speed)?;
 
         // 刷新输出
         stdout.flush()?;
