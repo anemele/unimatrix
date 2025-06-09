@@ -1,4 +1,6 @@
-use crossterm::execute;
+use std::io::Stdout;
+
+use crossterm::queue;
 use crossterm::{
     cursor::MoveTo,
     style::{Color, Print, SetForegroundColor},
@@ -25,8 +27,8 @@ impl Column {
         }
     }
 
-    fn clear_tail(&mut self, stdout: &mut impl std::io::Write, y_step: u16) -> anyhow::Result<()> {
-        execute!(
+    fn clear_tail(&mut self, stdout: &mut Stdout, y_step: u16) -> anyhow::Result<()> {
+        queue!(
             stdout,
             MoveTo(self.x, 0),
             SetForegroundColor(Color::Black),
@@ -38,7 +40,8 @@ impl Column {
             if yi < self.length {
                 break;
             }
-            execute!(
+
+            queue!(
                 stdout,
                 MoveTo(self.x, yi - self.length),
                 SetForegroundColor(Color::Black),
@@ -61,7 +64,7 @@ impl Column {
     }
 
     fn draw(&mut self, stdout: &mut impl std::io::Write) -> anyhow::Result<()> {
-        execute!(
+        queue!(
             stdout,
             MoveTo(self.x, self.y),
             SetForegroundColor(Color::White),
@@ -76,12 +79,13 @@ impl Column {
             }
             let y = self.y - i;
             if y < 500 {
-                execute!(
+                queue!(
                     stdout,
                     MoveTo(self.x, y),
                     SetForegroundColor(Color::Rgb { r: 0, g: m, b: 0 }),
                     Print(random_character())
                 )?;
+
                 if m >= step {
                     m -= step;
                 }
@@ -106,7 +110,7 @@ impl Columns {
         Self { columns, height }
     }
 
-    pub fn frame(&mut self, stdout: &mut impl std::io::Write, speed: u16) -> anyhow::Result<()> {
+    pub fn frame(&mut self, stdout: &mut Stdout, speed: u16) -> anyhow::Result<()> {
         // 更新和绘制所有列
         for column in &mut self.columns {
             column.clear_tail(stdout, speed)?;
