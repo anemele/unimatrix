@@ -33,7 +33,7 @@ pub fn run() -> anyhow::Result<()> {
 
         thread::sleep(Duration::from_millis(status.sleep.into()));
 
-        if event::poll(Duration::from_millis(0))? {
+        if event::poll(Duration::from_millis(1))? {
             match event::read()? {
                 Event::Resize(width, height) => {
                     execute!(stdout, terminal::Clear(terminal::ClearType::All))?;
@@ -43,8 +43,8 @@ pub fn run() -> anyhow::Result<()> {
                     KeyCode::Esc | KeyCode::Char('q') => {
                         break;
                     }
-                    KeyCode::Left => status.change_sleep_duration(-1),
-                    KeyCode::Right => status.change_sleep_duration(1),
+                    KeyCode::Down => status.change_sleep_duration(-1),
+                    KeyCode::Up => status.change_sleep_duration(1),
                     _ => (),
                 },
                 _ => (),
