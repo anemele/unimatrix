@@ -74,8 +74,12 @@ impl Column {
             Print(random_character())
         )?;
 
-        let step = 16;
-        let mut m: u8 = 255 - step;
+        let step = if self.length >= 16 {
+            16
+        } else {
+            255 / (self.length as u8)
+        };
+        let mut m: u8 = 255;
         for i in 1..self.length {
             if self.y <= i {
                 break;
