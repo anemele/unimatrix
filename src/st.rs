@@ -1,20 +1,20 @@
 use rand::Rng;
 
 pub struct Status {
-    pub speed: u16,
+    pub sleep: u16,
 }
 
 impl Status {
-    pub fn change_y_step(&mut self, change: i16) {
+    pub fn change_sleep_duration(&mut self, change: i16) {
         match change {
             1 => {
-                if self.speed < 5 {
-                    self.speed += 1;
+                if self.sleep < 300 {
+                    self.sleep += 10;
                 }
             }
             -1 => {
-                if self.speed > 1 {
-                    self.speed -= 1
+                if self.sleep > 100 {
+                    self.sleep -= 10
                 }
             }
             _ => (),

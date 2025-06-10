@@ -13,21 +13,24 @@ struct Column {
     x: u16,
     y: u16,
     length: u16,
+    speed: u16,
 }
 
 impl Column {
     fn new(x: u16, max_y: u16) -> Self {
         let mut rng = rand::rng();
         let length = rng.random_range(3..max_y);
+        let speed = rng.random_range(1..=3);
 
         Self {
             x,
             y: rng.random_range(0..max_y),
             length,
+            speed,
         }
     }
 
-    fn clear_tail(&mut self, stdout: &mut Stdout, y_step: u16) -> anyhow::Result<()> {
+    fn clear_tail(&mut self, stdout: &mut Stdout) -> anyhow::Result<()> {
         queue!(
             stdout,
             MoveTo(self.x, 0),
@@ -35,7 +38,7 @@ impl Column {
             Print(' ')
         )?;
 
-        for i in 0..y_step {
+        for i in 0..self.speed {
             let yi = self.y + i;
             if yi < self.length {
                 break;
@@ -52,14 +55,14 @@ impl Column {
         Ok(())
     }
 
-    fn update(&mut self, max_y: u16, y_step: u16) {
-        self.y += y_step;
+    fn update(&mut self, max_y: u16) {
+        self.y += self.speed;
 
-        // 重置超出屏幕的列
         if self.y > max_y + self.length {
             let mut rng = rand::rng();
             self.y = 0;
             self.length = rng.random_range(5..max_y / 3);
+            self.speed = rng.random_range(1..=3);
         }
     }
 
@@ -110,11 +113,10 @@ impl Columns {
         Self { columns, height }
     }
 
-    pub fn frame(&mut self, stdout: &mut Stdout, speed: u16) -> anyhow::Result<()> {
-        // 更新和绘制所有列
+    pub fn frame(&mut self, stdout: &mut Stdout) -> anyhow::Result<()> {
         for column in &mut self.columns {
-            column.clear_tail(stdout, speed)?;
-            column.update(self.height, speed);
+            column.clear_tail(stdout)?;
+            column.update(self.height);
             column.draw(stdout)?;
         }
 
